@@ -12,11 +12,16 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /opt/hostedtoolcache/CodeQL
+          df -h /
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -47,7 +52,29 @@ jobs:
           pip install buildozer Cython==0.29.36 virtualenv
 
       - name: Build debug APK
-        run: buildozer -v android debug
+        shell: bash
+        run: buildozer android debug 2>&1 | tee build.log
+
+      - name: Show errors from build log
+        if: failure()
+        shell: bash
+        run: |
+          echo "===== Lines with errors ====="
+          grep -n -i -E "error|failed|traceback|exception|no space|not found" build.log | tail -n 60 || true
+          echo
+          echo "===== Last 80 lines ====="
+          tail -n 80 build.log
+          echo
+          echo "===== Disk ====="
+          df -h /
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore
 
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
