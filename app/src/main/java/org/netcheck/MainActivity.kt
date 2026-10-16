@@ -31,10 +31,9 @@ import javax.net.ssl.X509TrustManager
 
 // --- Список сайтов для проверки ---
 private val SITES = listOf(
-    "t.me", "x.com", "instagram.com", "youtube.com", "chatgpt.com", "gosuslugi.ru",
+    "t.me", "x.com", "instagram.com", "youtube.com", "gosuslugi.ru",
     "ya.ru", "vk.ru", "max.ru", "sberbank.ru", "vtb.ru", "tbank.ru", "alfabank.ru",
-    "pornolab.net", "rutracker.org",
-    "ozon.ru", "wildberries.ru", "pikabu.com", "yaplakal.com",
+    "ozon.ru", "wildberries.ru", "rutracker.org", "pikabu.com", "yaplakal.com",
 )
 
 // --- Поля информации об IP ---
